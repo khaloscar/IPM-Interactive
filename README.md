@@ -4,6 +4,9 @@
 
 ## How to
 
+    git clone https://github.com/khaloscar/IPM-Interactive
+
+
     Just launch any HTML version in your preffered browser
     The exam tracks correct answers, partially correct and wrong answers.
     It tracks time and you are able to mark individual questions for later review.
