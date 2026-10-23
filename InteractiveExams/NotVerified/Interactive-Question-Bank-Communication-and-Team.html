@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Communication and Team Questions</title><style>
+:root{--bg:#f5f7fa;--card:#fff;--ink:#18243a;--muted:#64748b;--line:#d7dfe9;--accent:#2563eb;--good:#166534;--partial:#8a570d;--bad:#991b1b;--orange:#ea8d29}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 Arial,Helvetica,sans-serif}
+button,input,select{font:inherit}
+button{cursor:pointer}
+.topbar{position:sticky;top:0;z-index:15;background:rgba(255,255,255,.97);border-bottom:1px solid var(--line);box-shadow:0 1px 4px rgba(30,41,59,.04)}
+.topinner{max-width:1090px;margin:auto;padding:11px 22px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.branding{display:flex;flex-direction:column;gap:0}.branding strong{font-size:15px;color:#0f172a}.branding small{font-size:12px;color:var(--muted)}
+.topright{display:flex;gap:14px;align-items:center;flex-wrap:wrap;color:var(--muted);font-size:12px}
+.jump{padding:7px 9px;border-radius:8px;background:#fff;color:#334155;border:1px solid #cbd5e1;max-width:152px}
+.progress-track{height:3px;background:#e2e8f0}.progressfill{height:3px;background:var(--accent);width:0;transition:width .2s}
+.question-nav-shell{max-width:1090px;margin:auto;padding:7px 22px 10px}
+.question-nav{display:grid;grid-template-columns:repeat(auto-fit,minmax(29px,1fr));gap:5px}
+.chip{min-width:0;height:30px;padding:0;border:1px solid #cbd5e1;background:#fff;color:#64748b;border-radius:6px;font-size:12px;font-weight:700;position:relative}
+.chip.answered{background:#dbeafe;border-color:#93c5fd;color:#1d4ed8}
+.chip.good{background:#dcfce7;border-color:#86efac;color:#166534}
+.chip.partial{background:#fef3c7;border-color:#fbbf24;color:#854d0e}
+.chip.bad{background:#fee2e2;border-color:#fca5a5;color:#991b1b}
+.chip.unscored{background:#ede9fe;border-color:#c4b5fd;color:#6d28d9}
+.chip.current{outline:2px solid #1e40af;outline-offset:1px;z-index:1}
+.chip.flagged::after{content:'';position:absolute;width:6px;height:6px;border-radius:50%;background:#d97706;right:1px;top:1px;box-shadow:0 0 0 1px white}
+.legend{display:none;gap:14px;align-items:center;flex-wrap:wrap;color:#64748b;font-size:12px;padding-top:7px}
+.legend.visible{display:flex}.swatch{display:inline-block;vertical-align:middle;width:12px;height:12px;border-radius:3px;border:1px solid;margin-right:4px}
+.swatch.green{background:#dcfce7;border-color:#86efac}.swatch.yellow{background:#fef3c7;border-color:#fbbf24}.swatch.red{background:#fee2e2;border-color:#fca5a5}.swatch.purple{background:#ede9fe;border-color:#c4b5fd}
+.wrap{max-width:1090px;margin:auto;padding:13px 22px 150px}
+.card{background:var(--card);border:1px solid #d4dce6;border-radius:16px;padding:31px 34px;margin:8px 0 16px;box-shadow:0 1px 2px rgba(0,0,0,.025)}
+.intro,.resultspage,.question{display:none}.intro.active,.resultspage.active,.question.active{display:block}
+.question{min-height:min(545px,65vh)}
+h1{font-size:28px;line-height:1.3;margin:0 0 16px;color:#0f172a}h2{font-size:20px;margin:14px 0 8px}
+p{margin:9px 0 14px}.muted{color:var(--muted)}
+.source-info{font-size:14px;color:var(--muted)}.source-quote{background:#f8fafc;border:1px solid #dbe3ed;padding:14px 17px;border-radius:10px;line-height:1.55}
+.qtop{display:flex;justify-content:space-between;gap:14px;align-items:flex-start}.qnum{color:#2563eb;font-size:14px;font-weight:700}.qtitle{font-size:21px;font-weight:700;margin:2px 0 13px}.qsource{font-size:12px;color:var(--muted)}
+.stem{font-size:18px;white-space:pre-wrap;line-height:1.43;margin:8px 0 18px}
+.context{padding:13px 15px;margin:13px 0 18px;border-left:3px solid #93c5fd;background:#f6faff;border-radius:6px;font-size:15px;white-space:pre-wrap}
+.hint{font-size:15px;font-weight:700;margin:16px 0 14px;color:#16243a}
+.options{display:grid;gap:13px}
+.opt{display:flex;align-items:center;gap:14px;min-height:54px;padding:13px 17px;border:1px solid var(--line);border-radius:11px;background:#fff;cursor:pointer;transition:background .12s,border-color .12s;line-height:1.35}
+.opt:hover{background:#edf4ff;border-color:#93c5fd}.opt:focus-within{outline:2px solid #93c5fd;outline-offset:1px}
+.opt:has(input:checked){background:#eef5ff;border-color:#93c5fd}
+.opt input{width:17px;height:17px;margin:0;accent-color:var(--accent);cursor:pointer;flex:0 0 auto}
+.opt span{flex:1;cursor:pointer}
+.revisit-row{border-top:1px solid #edf0f5;margin:24px 0 0;padding:18px 0 0;text-align:center}
+.revisit-label{display:inline-flex;align-items:center;gap:10px;font-size:14px;cursor:pointer;color:#475569;font-weight:600}
+.revisit-label input{accent-color:#d97706;width:17px;height:17px;cursor:pointer}
+.feedback{margin:17px 0 0;border-top:1px dashed var(--line);padding-top:15px;line-height:1.6}
+.feedback.good{color:var(--good)}.feedback.partial{color:var(--partial)}.feedback.bad{color:var(--bad)}.feedback.unscored{color:#6d28d9}
+.feedback-note{color:#334155;font-size:14px;margin:8px 0;background:#f8fafc;border-left:3px solid #cbd5e1;padding:10px 13px;border-radius:5px}
+.note-warning{background:#fffbeb;border:1px solid #fcd34d;border-radius:9px;padding:13px 15px;font-size:14px;color:#78350f;margin:18px 0}
+.results-summary{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;padding:12px 16px;margin:12px 0;border:1px solid #bfdbfe;border-radius:10px;background:#eff6ff;color:#1e40af}
+.results-summary strong{font-size:23px}.results-summary span{font-size:13px;color:#475569}
+.review-group{margin:18px 0 0;padding:16px 17px;border-radius:11px;border:1px solid var(--line)}
+.review-group h3{margin:0 0 6px;font-size:17px}.review-group p{color:var(--muted);margin:0 0 12px;font-size:14px}
+.review-links{display:flex;flex-wrap:wrap;gap:7px}
+.review-links button{border:1px solid #93c5fd;background:#fff;color:#1d4ed8;border-radius:8px;padding:8px 11px;font-weight:700;font-size:13px}
+.review-links button:hover{background:#dbeafe}
+.footer{position:fixed;bottom:0;left:0;right:0;background:rgba(255,255,255,.98);border-top:1px solid #d9e1ea;box-shadow:0 -2px 15px rgba(0,0,0,.05);z-index:20}
+.footer-inner{max-width:1090px;margin:auto;padding:14px 22px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.left-actions,.right-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.left-actions{margin-left:clamp(0px,7vw,85px)}.right-actions{margin-left:auto}
+.btn{background:#fff;color:#334155;border:1px solid #cbd5e1;border-radius:9px;padding:10px 14px;font-size:13px;font-weight:700;white-space:nowrap}
+.btn:hover{background:#f1f5f9}.btn.primary{background:var(--accent);color:white;border-color:var(--accent)}.btn.primary:hover{background:#1d4ed8}
+.btn:disabled{opacity:.36;cursor:not-allowed}.counter{font-size:13px;color:#475569;min-width:70px;text-align:center;font-variant-numeric:tabular-nums}
+@media(max-width:750px){.wrap{padding:10px 11px 145px}.card{padding:20px 17px}.stem{font-size:17px}.topinner{padding:8px 11px}.question-nav-shell{padding:6px 11px 8px}.question-nav{display:flex;gap:4px;overflow-x:auto;padding:3px 2px 5px}.chip{flex:0 0 30px}.branding small{display:none}.footer-inner{padding:11px;gap:8px}.left-actions{margin-left:0}.btn{padding:8px 10px;font-size:12px}.counter{min-width:45px}}
+@media(max-width:460px){.topright{gap:7px}.topright .timer{display:none}.footer-inner{flex-wrap:wrap}.left-actions,.right-actions{flex:1 1 auto;justify-content:center}.right-actions{justify-content:flex-end}.btn{padding:7px 8px;font-size:11px}}
+@media print{.topbar,.footer{display:none}.wrap{padding:0}.question{display:block;page-break-after:always}.intro,.resultspage{display:none}}
+</style></head>
+<body><header class="topbar">
+<div class="topinner"><div class="branding"><strong>Communication and Team Questions</strong><small>Industrial Project Management · Question bank</small></div><div class="topright"><span id="answered">0 / 10 answered</span><span class="timer" id="timer">00:00 elapsed</span><label for="jump">Jump:</label><select id="jump" class="jump" aria-label="Jump to question"><option value="">Question</option></select></div></div>
+<div class="progress-track"><div id="progressfill" class="progressfill"></div></div>
+<div class="question-nav-shell"><nav class="question-nav" id="questionNav" aria-label="Question navigation"></nav><div class="legend" id="legend"><span><i class="swatch green"></i>Correct</span><span><i class="swatch yellow"></i>Partial</span><span><i class="swatch red"></i>Wrong / unanswered</span><span><i class="swatch purple"></i>Source issue</span><span>Orange dot = revisit</span></div></div></header>
+<main class="wrap"><section id="introPage" class="intro card"><h1>Communication and Team Questions</h1><div class="source-quote"><p>These are the <strong>original questions and marked answers</strong> from the attached study document, not a dated exam. The source gives no official exam instructions, grade thresholds, or point values.</p><p>Practice rules: one point for each completely correct response; you may select multiple options where the source has multiple marked answers. Alternative order is shuffled on each new attempt and stays fixed during that attempt.</p><p>The options and source answer key are hidden until you finish. <strong>Finish and grade</strong> works even with unanswered questions. Use <strong>Mark for revisit</strong> to save questions for a separate review list.</p><p><strong>10 questions, 10 available points.</strong> The source’s original identifiers (1a, 2a, …, 10c) are retained as source question labels.</p></div></section>
+<section id="questionPage" class="question card"><div class="qtop"><div><div id="q-number" class="qnum"></div><div id="q-title" class="qtitle"></div></div><div id="q-points" class="qsource"></div></div><div id="q-context" class="context" style="display:none"></div><p class="stem" id="q-stem"></p><div class="hint" id="q-hint"></div><div class="options" id="q-options"></div><div id="q-feedback"></div><div class="revisit-row"><label class="revisit-label"><input type="checkbox" id="revisit"> Mark for revisit</label></div></section>
+<section id="resultsPage" class="resultspage card"><div id="results-main"></div></section></main>
+<footer class="footer"><div class="footer-inner"><div class="left-actions"><button class="btn primary" id="submitBtn" type="button">Finish and grade</button><button class="btn" id="resetBtn" type="button">Start over</button></div><div class="right-actions"><button class="btn" id="prevBtn" type="button">← Previous</button><span class="counter" id="pageCounter">Instructions</span><button class="btn primary" id="nextBtn" type="button">Start →</button></div></div></footer>
+<script>const QUESTIONS=[{"source_id":"1a","stem":"The project owner is (among other things) responsible for…","options":["The project’s impact goals","The project’s project goals"],"correct":[0],"type":"single","note":"","source":"Communication and Team Questions"},{"source_id":"2a","stem":"The project manager is (among other things) responsible for…","options":["Delegating and follow-up on activities","Providing the project with resources","Assembling the steering committee"],"correct":[0],"type":"single","note":"","source":"Communication and Team Questions"},{"source_id":"3a","stem":"The steering committee is (among other things) responsible for…","options":["Approving the project plan","Providing the project with resources","Following up on the project goals"],"correct":[0],"type":"single","note":"","source":"Communication and Team Questions"},{"source_id":"4a","stem":"Belbin’s Team Roles is a model used for…","options":["Team composition","Project planning","Following up on project goals","Project communication","Team coordination"],"correct":[0],"type":"single","note":"","source":"Communication and Team Questions"},{"source_id":"5b","stem":"Which of the following are stages in Susan Wheelan’s Group Development Phases?","options":["Dependency and Inclusion","Counter-dependency and fight","Norming","Storming","Extraversion/Intraversion","Thinking/Feeling"],"correct":[0,1],"type":"multi","note":"","source":"Communication and Team Questions"},{"source_id":"6b","stem":"Efficient meetings are characterised by…","options":["They have a clear purpose and agenda","A chairperson is assigned in beforehand","They follow a specific decision-making method","Everyone in the project are present","The project owner is attending","The steering committee is attending"],"correct":[0,1,2],"type":"multi","note":"","source":"Communication and Team Questions"},{"source_id":"7a","stem":"Informal internal communication is often described as…","options":["”the social glue of the project”","”ineffective and costly”","”quite pleasant but not very useful”"],"correct":[0],"type":"single","note":"","source":"Communication and Team Questions"},{"source_id":"8b","stem":"The following activities can be categorised as formal external communication:","options":["Attending conferences","Contacting journalists","Project meetings","Steering committee meetings","Chatting by the coffee machine"],"correct":[0,1],"type":"multi","note":"","source":"Communication and Team Questions"},{"source_id":"9a","stem":"The following actors can be described as part of the project organisation:","options":["The steering committee","The project owner","Resource owners","The end user"],"correct":[0,1,2],"type":"multi","note":"","source":"Communication and Team Questions"},{"source_id":"10c","stem":"Which of the following actors/roles/stakeholders can be found both in SCRUM and stage-gate projects?","options":["Product owner","The end user","The project manager","The SCRUM master","The project team"],"correct":[1,4],"type":"multi","note":"","source":"Communication and Team Questions"}];
+const BANK_KEY="comm-team-bank-v1";
+const TOTAL=QUESTIONS.length;
+const GRADED=QUESTIONS.filter(q=>!q.unscored).length;
+const savedDefault={page:-1,answered:{},flagged:{},order:{},submitted:false,start:Date.now(),finished:null};
+let state={...savedDefault};
+try{const saved=JSON.parse(localStorage.getItem(BANK_KEY)||'null');if(saved && typeof saved==='object')state={...savedDefault,...saved};}catch(_){ }
+function shuffle(items){const a=items.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+QUESTIONS.forEach((q,i)=>{if(!Array.isArray(state.order[i])||state.order[i].length!==q.options.length){state.order[i]=shuffle(q.options.map((_,ix)=>ix));}});
+function persist(){try{localStorage.setItem(BANK_KEY,JSON.stringify(state));}catch(e){}}
+persist();
+const $=id=>document.getElementById(id);
+const esc=t=>String(t??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function qref(i){return QUESTIONS[i].source_id;}
+function selection(i){return [...(state.answered[i]||[])].sort((a,b)=>a-b);}
+function correctIndices(i){return [...QUESTIONS[i].correct].sort((a,b)=>a-b);}
+function sameSet(a,b){return a.length===b.length&&a.every((v,i)=>v===b[i]);}
+function status(i){const q=QUESTIONS[i];if(q.unscored)return 'unscored';const chosen=selection(i),correct=correctIndices(i);if(sameSet(chosen,correct))return 'good';if(q.type==='multi'&&chosen.some(v=>correct.includes(v)))return 'partial';return 'bad';}
+function point(i){return status(i)==='good'?1:0;}
+function letterFor(i,originalIndex){return String.fromCharCode(65+state.order[i].indexOf(originalIndex));}
+function statusLabel(s){return {good:'Correct',partial:'Partially correct',bad:'Incorrect / unanswered',unscored:'Source-key issue — unscored'}[s];}
+function optionMarkup(q,i){const chosen=selection(i);const kind=q.type==='multi'?'checkbox':'radio';return state.order[i].map((original,j)=>`<label class="opt"><input type="${kind}" name="opt-${i}" data-original="${original}" ${chosen.includes(original)?'checked':''} ${state.submitted?'disabled':''}><span>${esc(q.options[original])}</span></label>`).join('');}
+function feedbackHtml(q,i){if(!state.submitted)return '';
+ if(q.unscored)return `<div class="feedback unscored"><strong>Unscored — answer-key problem</strong><div class="feedback-note">${esc(q.issue||'The supplied source key cannot be verified.')}</div></div>`;
+ const stat=status(i);const correct=q.correct.map(x=>`<b>${letterFor(i,x)}.</b> ${esc(q.options[x])}`).join('<br>');
+ let h=`<div class="feedback ${stat}"><strong>${statusLabel(stat)}</strong><div class="feedback-note"><strong>Correct answer${q.correct.length>1?'s':''}:</strong><div style="margin-top:6px">${correct}</div></div>`;
+ if(q.note)h+=`<div class="feedback-note"><b>Source note:</b> ${esc(q.note)}</div>`;
+ h+='</div>';return h;}
+function showQuestion(i){const q=QUESTIONS[i];$('q-number').textContent=`QUESTION ${i+1} / ${TOTAL}`;$('q-title').textContent=`Source question ${q.source_id}`;$('q-points').textContent=q.unscored?'Not scored':`Maximum marks: 1`;
+ $('q-context').style.display=q.context?'block':'none';$('q-context').textContent=q.context||'';
+ $('q-stem').textContent=q.stem;$('q-hint').textContent=q.type==='multi'?'Select one or more alternatives:':'Select one alternative:';
+ $('q-options').innerHTML=optionMarkup(q,i);$('q-feedback').innerHTML=feedbackHtml(q,i);
+ const revisit=$('revisit');revisit.checked=!!state.flagged[i];
+ $('q-options').querySelectorAll('input').forEach(inp=>inp.addEventListener('change',()=>{if(state.submitted)return;const original=Number(inp.dataset.original);let chosen=selection(i);if(q.type==='single')chosen=[original];else chosen=inp.checked?shufflelessAdd(chosen,original):chosen.filter(x=>x!==original);state.answered[i]=chosen;persist();updateNav();}));
+}
+function shufflelessAdd(items,val){return Array.from(new Set([...items,val])).sort((a,b)=>a-b);}
+function setupNav(){const nav=$('questionNav'),jump=$('jump');QUESTIONS.forEach((q,i)=>{const button=document.createElement('button');button.type='button';button.className='chip';button.id='chip-'+i;button.textContent=i+1;button.title=`Question ${i+1} (source ${q.source_id})`;button.onclick=()=>showPage(i);nav.append(button);const opt=document.createElement('option');opt.value=i;opt.textContent=`${i+1} · ${q.source_id}`;jump.append(opt);});}
+function updateNav(){let answered=0;QUESTIONS.forEach((q,i)=>{const chip=$('chip-'+i);const chosen=selection(i);if(chosen.length)answered++;chip.className='chip';if(state.submitted)chip.classList.add(status(i));else if(chosen.length)chip.classList.add('answered');if(state.flagged[i])chip.classList.add('flagged');if(state.page===i)chip.classList.add('current');chip.title=`Question ${i+1} · Source ${q.source_id}`+(state.submitted?` · ${statusLabel(status(i))}`:'')+(state.flagged[i]?' · Marked for revisit':'');});
+ $('answered').textContent=`${answered} / ${TOTAL} answered`;$('progressfill').style.width=`${answered/TOTAL*100}%`;$('legend').classList.toggle('visible',state.submitted);}
+function reviewButtons(indices,emptyText){if(indices.length===0)return `<p>${emptyText}</p>`;return `<div class="review-links">${indices.map(i=>`<button type="button" data-goto="${i}">Q${i+1} <span style="font-weight:400">(${esc(qref(i))})</span></button>`).join('')}</div>`;}
+function buildResults(){let score=0;const bad=[],revisit=[],sourceIssues=[];QUESTIONS.forEach((q,i)=>{if(!q.unscored){score+=point(i);if(status(i)!=='good')bad.push(i);}else sourceIssues.push(i);if(state.flagged[i])revisit.push(i);});
+ $('results-main').innerHTML=`<h1>Exam review</h1><div class="results-summary"><strong>${score} / ${GRADED} points</strong><span>${TOTAL} questions total · ${GRADED} graded · ${TOTAL-GRADED} unscored · No official grade boundaries provided</span></div>
+ <div class="review-group"><h3>Review incorrect / partially correct / unanswered (${bad.length})</h3><p>Jump directly to questions that did not receive full credit.</p>${reviewButtons(bad,'No incorrect questions.')}</div>
+ <div class="review-group"><h3>Review your marked questions (${revisit.length})</h3><p>Your personal revisit flags, including correctly answered questions.</p>${reviewButtons(revisit,'You did not mark any questions for revisit.')}</div>
+ ${sourceIssues.length?`<div class="review-group"><h3>Source-key issue (${sourceIssues.length})</h3><p>Excluded from scoring because the supplied answer is inconsistent.</p>${reviewButtons(sourceIssues,'')}</div>`:''}
+ <p class="muted" style="font-size:13px;margin-top:16px">Green: correct · Yellow: partially correct · Red: wrong/unanswered · Purple: unscored source issue. The orange dot marks a question you flagged to revisit.</p>`;
+ $('results-main').querySelectorAll('[data-goto]').forEach(btn=>{btn.onclick=()=>showPage(Number(btn.dataset.goto));});}
+function showPage(idx){state.page=Math.max(-1,Math.min(TOTAL,idx));$('introPage').classList.toggle('active',state.page===-1);$('questionPage').classList.toggle('active',state.page>=0&&state.page<TOTAL);$('resultsPage').classList.toggle('active',state.page===TOTAL);if(state.page>=0&&state.page<TOTAL)showQuestion(state.page);if(state.page===TOTAL)buildResults();
+ $('prevBtn').disabled=state.page<=-1;$('nextBtn').disabled=state.page===TOTAL||(!state.submitted&&state.page===TOTAL-1);$('pageCounter').textContent=state.page===-1?'Instructions':state.page===TOTAL?'Results':`${state.page+1} / ${TOTAL}`;
+ $('nextBtn').textContent=state.page===-1?'Start →':'Next →';
+ $('jump').value=state.page>=0&&state.page<TOTAL?String(state.page):'';
+ $('submitBtn').disabled=state.submitted;$('submitBtn').textContent=state.submitted?'Graded ✓':'Finish and grade';
+ updateNav();persist();window.scrollTo({top:0,behavior:'instant'});
+}
+$('jump').addEventListener('change',e=>{if(e.target.value!=='')showPage(Number(e.target.value));});
+$('revisit').addEventListener('change',e=>{if(state.page>=0&&state.page<TOTAL){state.flagged[state.page]=e.target.checked;persist();updateNav();}});
+$('prevBtn').onclick=()=>showPage(state.page===TOTAL?TOTAL-1:state.page-1);
+$('nextBtn').onclick=()=>{if(state.page===-1)showPage(0);else showPage(state.page+1);};
+$('submitBtn').onclick=()=>{if(state.submitted)return;state.submitted=true;state.finished=Date.now();persist();showPage(TOTAL);};
+$('resetBtn').onclick=()=>{if(!confirm('Start over? This will clear your answers, revisit flags, and score, and reshuffle all alternatives.'))return;state={page:-1,answered:{},flagged:{},order:{},submitted:false,start:Date.now(),finished:null};QUESTIONS.forEach((q,i)=>{state.order[i]=shuffle(q.options.map((_,ix)=>ix));});persist();showPage(-1);};
+function tick(){const elapsed=Math.max(0,Math.floor(((state.finished||Date.now())-state.start)/1000));$('timer').textContent=`${String(Math.floor(elapsed/60)).padStart(2,'0')}:${String(elapsed%60).padStart(2,'0')} elapsed`;}setInterval(tick,1000);tick();
+setupNav();showPage(state.page);
+</script></body></html>
